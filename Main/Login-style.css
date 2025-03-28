@@ -3,6 +3,41 @@
     src: url('SpaceMono-Regular.ttf') format('truetype');
 }
 
+:root{
+    --text-color: #000;
+
+}
+
+#zalan:hover{
+    background-color: violet;
+    color: #000;
+}
+
+#zente:hover{
+    background-color: purple;
+    color: #000;
+}
+
+#zeti:hover{
+    background-color: palegreen;
+    color: #000;
+}
+
+#kristof:hover{
+    background-color: #00ff00;
+    color: #000;
+}
+
+#simon:hover{
+    background-color: peru;
+    color: #000;
+}
+
+#peti:hover{
+    background-color: salmon;
+    color: #000;
+}
+
 body {
     font-family: 'Font', sans-serif;
     background-color: #f4f4f4;
@@ -13,23 +48,36 @@ body {
     margin: 0;
 }
 
-a{
+a {
     text-decoration: none;
-    color: #000;
+    color: var(--text-color);
     font-weight: bold;
+    border: 2px solid var(--text-color);
+    padding: 0.5rem;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+a:hover {
+    background-color: #ff0000;
+    color: #fff;
+    transform: scale(1.05);
 }
 
 .select {
     display: flex;
     flex-direction: column;
-    font-size: 2rem;
+    font-size: 8vh;
+    row-gap: 0.5vh;
 }
 
 @media (orientation: landscape) {
     .select {
         flex-direction: row;
         justify-content: center;
-        gap: 3vw;
-        font-size: 5vw;
+        gap: 0.5vw;
+        font-size: 4vw;
     }
 }
