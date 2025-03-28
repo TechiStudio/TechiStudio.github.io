@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'Font';
+    src: url('SpaceMono-Regular.ttf') format('truetype');
+}
+
+body {
+    font-family: 'Font', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+a{
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.select {
+    display: flex;
+    flex-direction: column;
+    font-size: 2rem;
+}
+
+@media (orientation: landscape) {
+    .select {
+        flex-direction: row;
+        justify-content: center;
+        gap: 3vw;
+        font-size: 5vw;
+    }
+}
