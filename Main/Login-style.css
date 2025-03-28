@@ -66,6 +66,10 @@ a:hover {
     transform: scale(1.05);
 }
 
+a:active {
+    transform: scale(0.95);
+}
+
 .select {
     display: flex;
     flex-direction: column;
