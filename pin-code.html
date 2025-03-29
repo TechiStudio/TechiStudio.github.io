@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIN Code</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .pin-container {
+            text-align: center;
+        }
+        input[type="password"] {
+            font-size: 2rem;
+            padding: 0.5rem;
+            width: 10rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        button {
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="pin-container">
+        <input type="password" id="pin" maxlength="4" placeholder="****" oninput="handleInput(event)" onkeypress="handleKeyPress(event)">
+    </div>
+
+    <script>
+        function checkPin() {
+            const pin = document.getElementById('pin').value;
+            if (pin === '3311') {
+                window.location.href = 'Main/Login.html';
+            } else {
+                alert('Incorrect PIN. Please try again.');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkPin(); 
+            }
+        }
+
+        function handleInput(event) {
+            const pin = event.target.value;
+            if (pin.length === 4) {
+                setTimeout(() => {
+                    checkPin(); // Automatikusan ellenőrzi, ha 4 karakter be van írva, 0.2 másodperc késleltetéssel       checkPin(); // Automatikusan ellenőrzi, ha 4 karakter be van írva, 0.2 másodperc késleltetéssel
+                }, 500); // 200 ms = 0.2 másodperc       }, 200); // 200 ms = 0.2 másodperc
+            }
+        }
+    </script>
+
+
+</html></body></body>
+</html>
