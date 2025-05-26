@@ -10,6 +10,7 @@
       margin: 0;
       padding: 0;
       background: black;
+      cursor: pointer;
     }
     video {
       width: 100vw;
@@ -17,10 +18,22 @@
       object-fit: cover;
       display: block;
     }
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.5rem;
+      font-family: sans-serif;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <video id="myVideo" autoplay loop muted playsinline></video>
+  <video id="myVideo" loop playsinline></video>
+  <div class="message" id="message">Kattints bárhová a videó indításához hanggal</div>
+
   <script>
     function getVideoSource() {
       if (window.matchMedia("(orientation: portrait)").matches) {
@@ -32,9 +45,9 @@
 
     function playFullscreenVideo() {
       const video = document.getElementById('myVideo');
+      const message = document.getElementById('message');
       video.src = getVideoSource();
       video.load();
-      video.play();
 
       // Teljes képernyő kérés
       if (video.requestFullscreen) {
@@ -44,12 +57,21 @@
       } else if (video.msRequestFullscreen) {
         video.msRequestFullscreen();
       }
+
+      // Lejátszás
+      video.play().then(() => {
+        if (message) message.style.display = 'none';
+      }).catch(err => {
+        console.error("Nem sikerült automatikusan elindítani a videót:", err);
+      });
     }
 
-    // Indításkor
-    playFullscreenVideo();
+    // Csak az első kattintás után indul a videó hanggal
+    document.body.addEventListener("click", () => {
+      playFullscreenVideo();
+    }, { once: true });
 
-    // Ha elfordítják a kijelzőt, váltson videót
+    // Forgatás vagy átméretezés esetén frissítse a videót
     window.addEventListener("orientationchange", playFullscreenVideo);
     window.addEventListener("resize", playFullscreenVideo);
   </script>
