@@ -2,6 +2,14 @@
 <html>
 <head>
 <style>
+  :root {
+    --font-size-h1: 4vh;
+    --font-size-h2: 5vh;
+    --font-size-h3: 3.5vh;
+    --font-size-p: 3vh;
+    --font-size-link-hover: 3.5vh;
+    --font-size-login-btn: 2.5vh;
+  }
   @font-face {
     font-family: 'Font';
     src: url('Main/SpaceMono-Regular.ttf') format('truetype');
@@ -10,8 +18,9 @@
       font-family: 'Font', sans-serif;
       background-color: #f4f4f4;
       margin: 0;
+      cursor: default;
       min-height: 100vh;
-      padding-top: 5vh; /* Felső margó csökkentése (pl. 40px helyett 10px) */
+      padding-top: 15vh; /* Adj hozzá nagyobb felső paddinget, hogy ne takarja ki a tartalmat a fix header */
     }
   a{    
     color: red;
@@ -20,63 +29,179 @@
   }
   a:hover {
     font-weight: bold;
-    font-size: 3.5vh;
+    font-size: var(--font-size-link-hover);
   }
   p {
-    margin: 5vh 5vw 0 5vw; /* Bal és jobb margó */
-    font-size: 3vh;
+    margin: 5vh 5vw 0 5vw;
+    font-size: var(--font-size-p);
     line-height: 1.5;
-    color: #333; /* Szöveg szín */
-    max-width: 800px; /* Max szélesség a szövegnek */
+    color: #333;
+    max-width: 800px;
   }
   h3 {
-    margin: 5vh 5vw 0 5vw; /* Bal és jobb margó */
-    font-size: 3.5vh;
-    color: #086137; /* Cím szín */
+    margin: 5vh 5vw 0 5vw;
+    font-size: var(--font-size-h3);
+    color: #086137;
   }
   #login-btn {
-    font-size: 2.5vh;
-    padding: 1.2vh 2vw; /* Nagyobb padding */
+    font-size: var(--font-size-login-btn);
+    padding: 1.2vh 2vw;
     background-color: #137547;
     color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     z-index: 10;
-    margin-left: auto; /* A gombot jobbra tolja */
+    margin-left: auto;
   }
   #header-row {
     width: 90vw;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Módosítás: egyenlő térköz */
     padding: 10px 2vw;
     min-height: 60px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #fff;
-    position: relative;
-    z-index: 10;
+    position: fixed;
+    top: 1vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
     margin: 0 auto;
-    border-radius: 10px; /* Lekerekített sáv */
+    border-radius: 10px;
+  }
+  #header-title {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  #planty-btn {
+    font-size: var(--font-size-login-btn);
+    padding: 1.2vh 2vw;
+    background-color: #0e9c57;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 0 2vw;
+    transition: background 0.2s;
+  }
+  #planty-btn:hover {
+    background-color: #086137;
+  }
+  #header-actions {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
   #header-row h1 {
     margin: 0;
-    font-size: 4vh;
+    font-size: var(--font-size-h1);
     color: #137547;
   }
+  #header-row h1 a {
+    text-decoration: none;
+    color: inherit;
+    transition: none;
+  }
+  #header-row h1 a:hover {
+    text-decoration: none;
+    color: inherit;
+    transition: none;
+    font-weight: inherit;
+    font-size: inherit;
+  }
+  #header-row h2 {
+    margin: 0;
+    font-size: var(--font-size-h2);
+    color: #137547;
+  }
+  #header-row h2 a {
+    text-decoration: none;
+    color: inherit;
+    transition: none;
+  }
+  #header-row h2 a:hover {
+    text-decoration: none;
+    color: inherit;
+    transition: none;
+    font-weight: inherit;
+    font-size: inherit;
+  }
+  #mi {
+    width: 90vw;
+    margin: 0 auto;
+    padding: 2vh 5vw;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin-top: 20px;
+  }
+  @media (max-width: 700px), (orientation: portrait) {
+  #header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 98vw;
+    padding: 10px 1vw;
+    min-height: unset;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+  }
+  #header-title {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  #header-actions {
+    position: absolute;
+    top: 10px;
+    right: 2vw;
+    width: auto;
+    margin-bottom: 0;
+  }
+  #header-row h1, #header-row h2 {
+    font-size: 3vh;
+  }
+  #login-btn, #planty-btn {
+    font-size: 2vh;
+    padding: 1vh 4vw;
+    margin: 5px 0;
+    width: 100%;
+  }
+  #mi {
+    width: 98vw;
+    padding: 2vh 2vw;
+    margin-top: 4vh; /* PORTRÉ módban kisebb felső margó */
+    max-width: 100vw;
+  }
+  p, h3 {
+    margin: 2vh 2vw 0 2vw;
+    font-size: 2.5vh;
+    max-width: 100vw;
+  }
+}
 </style>
 </head>
 <body>
 <div id="header-row">
-  <h1>TechiStudio</h1>
-  <button id="login-btn" onclick="location.href='pin-code.html'">
-    Bejelentkezés
-  </button>
+  <div id="header-title">
+    <h1><a href="index.html">TechiStudio</a></h1>
+  </div>
+    <h2><a href="Planty/index.html">Planty</a></h2>
+  <div id="header-actions">
+    <button id="login-btn" onclick="location.href='pin-code.html'">
+      Bejelentkezés
+    </button>
+  </div>
 </div>
 <div id="mi">
- <h3>Sziasztok, mi vagyunk a TechiStudio!</h3>
+ <h3>Kik vagyunk mi?</h3>
   <p>
-    Szeretjük a technológiát, és ezt szeretnénk megosztani veletek is. A <a href="https://www.youtube.com/@TechiStudio-official">YouTube</a> csatornánkon gyakran osztjuk meg ötleteinket. Célunk, hogy közérthetően, mégis alaposan mutassuk be a legújabb technológiai megoldásokat. Legyen szó telefonokról, laptopokról vagy hasznos alkalmazásokról, nálunk garantáltan találsz hasznos tartalmat. Tesztelünk, összehasonlítunk, és tippeket adunk arra is, hogyan hozd ki a legtöbbet az eszközeidből. Nemcsak informálni akarunk, hanem szórakoztatni is – ezért a videóink stílusa könnyed, de tartalmas. Fontos számunkra a közösség, így szívesen válaszolunk a kommentekre és ötleteket is szívesen fogadunk tőletek. Ha érdekel a tech világa, itt a helyed velünk! <a href="https://www.youtube.com/@TechiStudio-official">Iratkozz fel</a>, és fedezzük fel együtt a digitális jövőt!
+    Mi egy Lego robotokat fejlesztő csapat vagyunk. A <a href="https://www.youtube.com/@TechiStudio-official">YouTube</a> csatornánkon gyakran osztjuk meg ötleteinket. Célunk, hogy közérthetően, mégis alaposan mutassuk be a legújabb megoldásainkat. Nemcsak informálni akarunk, hanem szórakoztatni is – ezért a videóink stílusa könnyed, de tartalmas. Fontos számunkra a közösség, így szívesen válaszolunk a kommentekre és ötleteket is szívesen fogadunk tőletek. Ha érdekel a robotika világa, akkor csekkold le a csatornánkat! <br> <a href="https://www.youtube.com/@TechiStudio-official">Iratkozz fel</a>, és fedezzük fel együtt a digitális jövőt!
   </p>
 </div>
 
