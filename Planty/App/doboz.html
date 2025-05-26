@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>test</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: black;
+    }
+    video, #errorImage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+    #errorImage {
+      display: none;
+      background: black;
+      justify-content: center;
+      align-items: center;
+    }
+    #errorImage img {
+      max-width: 50%;
+      max-height: 50%;
+    }
+  </style>
+</head>
+<body>
+  <video id="myVideo" autoplay loop muted playsinline></video>
+  <div id="errorImage">
+    <img src="Media/error.png" alt="Hiba történt">
+  </div>
+
+  <script>
+    function getVideoSource() {
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        return "Media/rotate.mp4";
+      } else {
+        return "Media/doboz.mp4";
+      }
+    }
+
+    function playFullscreenVideo() {
+      const video = document.getElementById('myVideo');
+      const errorImage = document.getElementById('errorImage');
+      video.src = getVideoSource();
+      video.load();
+      video.play().catch(() => {
+        showError();
+      });
+
+      video.onerror = function () {
+        showError();
+      };
+
+      function showError() {
+        video.style.display = "none";
+        errorImage.style.display = "flex";
+      }
+
+      // Teljes képernyő kérés
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+    }
+
+    // Indításkor
+    playFullscreenVideo();
+
+    // Ha elfordítják a kijelzőt, váltson videót
+    window.addEventListener("orientationchange", playFullscreenVideo);
+    window.addEventListener("resize", playFullscreenVideo);
+  </script>
+</body>
+</html>
