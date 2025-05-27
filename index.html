@@ -25,10 +25,11 @@
     }
   a{    
     color: red;
-    text-decoration: none;
-    transition: font-weight 0.3s ease, font-size 0.3s ease;
+    text-decoration: underline;
+    transition: font-weight 0.3s ease, font-size 0.3s ease, text-decoration 0.3s ease;
   }
   a:hover {
+    text-decoration: none;
     font-weight: bold;
     font-size: var(--font-size-link-hover);
   }
@@ -178,7 +179,7 @@
   <div id="header-title">
     <h1><a href="index.html">TechiStudio</a></h1>
   </div>
-    <h2><a href="Planty/index.html">Planty</a></h2>
+    <h2><a href="Planty/App/index.html">Planty</a></h2>
   <div id="header-actions">
     <button id="login-btn" onclick="location.href='pin-code.html'">
       Bejelentkezés
