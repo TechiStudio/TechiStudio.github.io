@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            cursor: none;
+        }
+        #npk-display {
+            text-align: center;
+            font-size: 2em;
+            padding: 20px;
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .chart-container {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 20px;
+            height: 60vh;
+            gap: 0;
+            position: relative;
+        }
+        .bars-group {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: flex-end;
+            height: 100%;
+            flex: 1 1 60%;
+            max-width: 60vw;
+            min-width: 0;
+        }
+        .bar {
+            flex: 1 1 0;
+            min-width: 120px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            border: 1px solid #ccc;
+            position: relative;
+            margin: 0 10px;
+        }
+        .bar-content {
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            transition: height 0.3s;
+            color: black;
+            font-weight: bold;
+            position: absolute;
+            bottom: 0;
+        }
+        .horizontal-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            justify-content: stretch;
+            align-items: stretch;
+            height: 100%;
+            flex: 1 1 0;         /* Ez tölti ki a maradék helyet */
+            min-width: 220px;
+            max-width: 100%;
+            margin-left: 40px;
+            position: static;
+        }
+        .hbar {
+            width: 100%;         /* Teljes szélesség */
+            flex: 1 1 0;
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            position: relative;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .hbar-content {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: black;
+            transition: width 0.3s;
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding-left: 8px;
+            box-sizing: border-box;
+        }
+        #downloadBtn {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            margin: 0;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div id="npk-display">NPK: -, -, -</div>
+
+<div class="chart-container">
+    <!-- Függőleges oszlopok -->
+    <div class="bars-group">
+        <div class="bar">
+            <div class="bar-content" id="bar-bab" style="height: 0%; background-color: #e3e3ff;">Bab</div>
+        </div>
+        <div class="bar">
+            <div class="bar-content" id="bar-buza" style="height: 0%; background-color: #ffe3e3;">Búza</div>
+        </div>
+        <div class="bar">
+            <div class="bar-content" id="bar-kuka" style="height: 0%; background-color: #e3ffe3;">Kuka</div>
+        </div>
+    </div>
+    <!-- Vízszintes sávok egy külön konténerben -->
+    <div class="horizontal-bars">
+        <div class="hbar">
+            <div class="hbar-content" id="bar-n" style="width: 0%; background-color: #cce5ff;">N</div>
+        </div>
+        <div class="hbar">
+            <div class="hbar-content" id="bar-p" style="width: 0%; background-color: #ffd6cc;">P</div>
+        </div>
+        <div class="hbar">
+            <div class="hbar-content" id="bar-k" style="width: 0%; background-color: #d6ffd6;">K</div>
+        </div>
+    </div>
+</div>
+
+<button id="downloadBtn">Letöltés</button>
+
+<script>
+    // Ha álló módban van a kijelző, irányítsd át az index.html-re
+    if (window.matchMedia("(orientation: portrait)").matches) {
+            history.back();;
+    }
+</script>
+<script>
+    let measuring = false;
+    let currentType = null;
+    let numberStr = "";
+    let n = null, p = null, k = null;
+
+    let values = [0, 0, 0]; // [bab, buza, kuka]
+    const maxValue = 3;
+
+    const mentesek = []; // ide mentjük az összes adatot
+
+    function showNPK() {
+        document.getElementById('npk-display').textContent = `NPK: ${n ?? "-"}, ${p ?? "-"}, ${k ?? "-"}`;
+        updateBars();
+    }
+
+    function updateBars() {
+        document.getElementById('bar-bab').style.height = `${(values[0] / maxValue) * 100}%`;
+        document.getElementById('bar-buza').style.height = `${(values[1] / maxValue) * 100}%`;
+        document.getElementById('bar-kuka').style.height = `${(values[2] / maxValue) * 100}%`;
+        // N, P, K oszlopok magassága az n, p, k értékek alapján (max 255)
+        document.getElementById('bar-n').style.width = n != null ? `${(n / 255) * 100}%` : '0%';
+        document.getElementById('bar-p').style.width = p != null ? `${(p / 255) * 100}%` : '0%';
+        document.getElementById('bar-k').style.width = k != null ? `${(k / 255) * 100}%` : '0%';
+        // Értékek kiírása az oszlopokra
+        document.getElementById('bar-n').textContent = `N: ${n ?? '-'}`;
+        document.getElementById('bar-p').textContent = `P: ${p ?? '-'}`;
+        document.getElementById('bar-k').textContent = `K: ${k ?? '-'}`;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        const key = e.key.toLowerCase();
+
+        // SPACE = letöltés gomb
+        if (e.code === "Space") {
+            document.getElementById('downloadBtn').click();
+            return;
+        }
+
+        // Ha NPK bevitel folyamatban van, ne növelje a terményeket
+        if (!measuring) {
+            // Oszlop állítás
+            if (key === "1") { values[0] = Math.min(values[0] + 1, maxValue); updateBars(); return; }
+            if (key === "2") { values[1] = Math.min(values[1] + 1, maxValue); updateBars(); return; }
+            if (key === "3") { values[2] = Math.min(values[2] + 1, maxValue); updateBars(); return; }
+            if (key === "0") { values = [0, 0, 0]; updateBars(); return; }
+        }
+
+        // NPK bevitel kezdése
+        if (!measuring && ["n", "p", "k"].includes(key)) {
+            measuring = true;
+            currentType = key;
+            numberStr = "";
+            document.getElementById('npk-display').textContent = `Írd be a(z) ${key.toUpperCase()} értéket, majd nyomd meg újra a(z) ${key}-t`;
+            return;
+        }
+
+        // NPK számbevitel
+        if (measuring) {
+            if (e.key.match(/^[0-9]$/)) {
+                numberStr += e.key;
+                document.getElementById('npk-display').textContent = numberStr;
+                return;
+            }
+            if (key === currentType) {
+                if (currentType === "n") n = Number(numberStr);
+                if (currentType === "p") p = Number(numberStr);
+                if (currentType === "k") k = Number(numberStr);
+                measuring = false;
+                currentType = null;
+                numberStr = "";
+                showNPK();
+                return;
+            }
+        }
+
+        // Enter -> mentés
+        if (e.key === "Enter") {
+            if (n != null && p != null && k != null) {
+                // Budapest időzóna (CEST, UTC+2) szerinti ISO string
+                const now = new Date();
+                const local = new Date(now.getTime() + (0 - now.getTimezoneOffset()) * 60000);
+                const timestamp = local.toISOString().replace('Z', 'UTC+02:00'); // CEST
+
+                const adat = {
+                    timestamp: timestamp,
+                    npk: { n, p, k },
+                    termenyek: {
+                        bab: values[0],
+                        buza: values[1], 
+                        kuka: values[2]
+                    }
+                };
+                mentesek.push(adat);
+                document.getElementById('npk-display').textContent = `Mentve: NPK ${n}, ${p}, ${k}`;
+            } else {
+                document.getElementById('npk-display').textContent = "Előbb add meg az NPK értékeket!";
+            }
+        }
+    });
+
+    // Letöltés gomb
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        if (mentesek.length === 0) {
+            alert("Nincs mentett adat!");
+            return;
+        }
+        const content = JSON.stringify(mentesek, null, 2);
+        const blob = new Blob([content], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mentett_adatok.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    updateBars();
+</script>
+
+</body>
+</html>
