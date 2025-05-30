@@ -151,6 +151,17 @@
     }
 </script>
 <script>
+    // Gomb-hozzárendelések
+    const keyBindings = {
+        bab: "F18",
+        buza: "F17",
+        kuka: "F16",
+        reset: "F9",
+        npk: { n: "F13", p: "F14", k: "F15" },
+        save: "F20"
+        // download: "Space"  // 
+    };
+
     let measuring = false;
     let currentType = null;
     let numberStr = "";
@@ -183,27 +194,26 @@
     document.addEventListener('keydown', function(e) {
         const key = e.key.toLowerCase();
 
-        // SPACE = letöltés gomb
-        if (e.code === "Space") {
-            document.getElementById('downloadBtn').click();
-            return;
-        }
+        // Letöltés gomb
+        // if (e.code === keyBindings.download) {
+        //     document.getElementById('downloadBtn').click();
+        //     return;
+        // }
 
         // Ha NPK bevitel folyamatban van, ne növelje a terményeket
         if (!measuring) {
             // Oszlop állítás
-            if (key === "1") { values[0] = Math.min(values[0] + 1, maxValue); updateBars(); return; }
-            if (key === "2") { values[1] = Math.min(values[1] + 1, maxValue); updateBars(); return; }
-            if (key === "3") { values[2] = Math.min(values[2] + 1, maxValue); updateBars(); return; }
-            if (key === "0") { values = [0, 0, 0]; updateBars(); return; }
+            if (e.code === keyBindings.bab) { values[0] = Math.min(values[0] + 1, maxValue); updateBars(); return; }
+            if (e.code === keyBindings.buza) { values[1] = Math.min(values[1] + 1, maxValue); updateBars(); return; }
+            if (e.code === keyBindings.kuka) { values[2] = Math.min(values[2] + 1, maxValue); updateBars(); return; }
+            if (e.code === keyBindings.reset) { values = [0, 0, 0]; updateBars(); return; }
         }
 
         // NPK bevitel kezdése
-        if (!measuring && ["n", "p", "k"].includes(key)) {
+        if (!measuring && Object.values(keyBindings.npk).includes(e.code)) {
             measuring = true;
-            currentType = key;
+            currentType = e.code;
             numberStr = "";
-            document.getElementById('npk-display').textContent = `Írd be a(z) ${key.toUpperCase()} értéket, majd nyomd meg újra a(z) ${key}-t`;
             return;
         }
 
@@ -214,10 +224,10 @@
                 document.getElementById('npk-display').textContent = numberStr;
                 return;
             }
-            if (key === currentType) {
-                if (currentType === "n") n = Number(numberStr);
-                if (currentType === "p") p = Number(numberStr);
-                if (currentType === "k") k = Number(numberStr);
+            if (e.code === currentType) {
+                if (currentType === keyBindings.npk.n) n = Number(numberStr);
+                if (currentType === keyBindings.npk.p) p = Number(numberStr);
+                if (currentType === keyBindings.npk.k) k = Number(numberStr);
                 measuring = false;
                 currentType = null;
                 numberStr = "";
@@ -226,8 +236,8 @@
             }
         }
 
-        // Enter -> mentés
-        if (e.key === "Enter") {
+        // Mentés
+        if (e.code === keyBindings.save) {
             if (n != null && p != null && k != null) {
                 // Budapest időzóna (CEST, UTC+2) szerinti ISO string
                 const now = new Date();
