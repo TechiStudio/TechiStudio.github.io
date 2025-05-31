@@ -172,23 +172,78 @@
 
     const mentesek = []; // ide mentjük az összes adatot
 
+    // Magyar és angol szövegek
+const translations = {
+    hu: {
+        npk: "NPK: -, -, -",
+        bab: "Bab",
+        buza: "Búza",
+        kuka: "Kuka",
+        n: "N",
+        p: "P",
+        k: "K",
+        download: "Letöltés",
+        saved: (n, p, k) => `Mentve: NPK ${n}, ${p}, ${k}`,
+        enterNPK: "Előbb add meg az NPK értékeket!",
+        noData: "Nincs mentett adat!"
+    },
+    en: {
+        npk: "NPK: -, -, -",
+        bab: "Bean",
+        buza: "Wheat",
+        kuka: "Trash",
+        n: "N",
+        p: "P",
+        k: "K",
+        download: "Download",
+        saved: (n, p, k) => `Saved: NPK ${n}, ${p}, ${k}`,
+        enterNPK: "Please enter NPK values first!",
+        noData: "No saved data!"
+    }
+};
+
+let lang = "hu";
+
+function applyTranslations() {
+    document.getElementById('npk-display').textContent = translations[lang].npk;
+    document.getElementById('bar-bab').textContent = translations[lang].bab;
+    document.getElementById('bar-buza').textContent = translations[lang].buza;
+    document.getElementById('bar-kuka').textContent = translations[lang].kuka;
+    document.getElementById('bar-n').textContent = translations[lang].n + (n != null ? `: ${n}` : '');
+    document.getElementById('bar-p').textContent = translations[lang].p + (p != null ? `: ${p}` : '');
+    document.getElementById('bar-k').textContent = translations[lang].k + (k != null ? `: ${k}` : '');
+    document.getElementById('downloadBtn').textContent = translations[lang].download;
+}
+applyTranslations();
+
+// Tab váltás
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Tab") {
+        e.preventDefault();
+        lang = lang === "hu" ? "en" : "hu";
+        applyTranslations();
+        showNPK();
+    }
+});
+
     function showNPK() {
         document.getElementById('npk-display').textContent = `NPK: ${n ?? "-"}, ${p ?? "-"}, ${k ?? "-"}`;
         updateBars();
     }
 
     function updateBars() {
+        document.getElementById('bar-bab').textContent = translations[lang].bab;
+        document.getElementById('bar-buza').textContent = translations[lang].buza;
+        document.getElementById('bar-kuka').textContent = translations[lang].kuka;
         document.getElementById('bar-bab').style.height = `${(values[0] / maxValue) * 100}%`;
         document.getElementById('bar-buza').style.height = `${(values[1] / maxValue) * 100}%`;
         document.getElementById('bar-kuka').style.height = `${(values[2] / maxValue) * 100}%`;
-        // N, P, K oszlopok magassága az n, p, k értékek alapján (max 255)
         document.getElementById('bar-n').style.width = n != null ? `${(n / 255) * 100}%` : '0%';
         document.getElementById('bar-p').style.width = p != null ? `${(p / 255) * 100}%` : '0%';
         document.getElementById('bar-k').style.width = k != null ? `${(k / 255) * 100}%` : '0%';
-        // Értékek kiírása az oszlopokra
-        document.getElementById('bar-n').textContent = `N: ${n ?? '-'}`;
-        document.getElementById('bar-p').textContent = `P: ${p ?? '-'}`;
-        document.getElementById('bar-k').textContent = `K: ${k ?? '-'}`;
+        document.getElementById('bar-n').textContent = translations[lang].n + (n != null ? `: ${n}` : '');
+        document.getElementById('bar-p').textContent = translations[lang].p + (p != null ? `: ${p}` : '');
+        document.getElementById('bar-k').textContent = translations[lang].k + (k != null ? `: ${k}` : '');
     }
 
     document.addEventListener('keydown', function(e) {
@@ -254,9 +309,9 @@
                     }
                 };
                 mentesek.push(adat);
-                document.getElementById('npk-display').textContent = `Mentve: NPK ${n}, ${p}, ${k}`;
+                document.getElementById('npk-display').textContent = translations[lang].saved(n, p, k);
             } else {
-                document.getElementById('npk-display').textContent = "Előbb add meg az NPK értékeket!";
+                document.getElementById('npk-display').textContent = translations[lang].enterNPK;
             }
         }
     });
@@ -264,7 +319,7 @@
     // Letöltés gomb
     document.getElementById('downloadBtn').addEventListener('click', function() {
         if (mentesek.length === 0) {
-            alert("Nincs mentett adat!");
+            alert(translations[lang].noData);
             return;
         }
         const content = JSON.stringify(mentesek, null, 2);
