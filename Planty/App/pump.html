@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <link rel="website icon" type="png" href="../../icon.png">
+  <title>pump</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: black;
+    }
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <video id="myVideo" autoplay loop playsinline></video>
+  <script>
+    function getVideoSource() {
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        return "Media/rotate.mp4";
+      } else {
+        return "Media/pump.mp4";
+      }
+    }
+
+    function playFullscreenVideo() {
+      const video = document.getElementById('myVideo');
+      video.src = getVideoSource();
+      video.load();
+      video.play();
+      video.muted = false; // Hang bekapcsolása
+
+      // Teljes képernyő kérés
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+    }
+
+    // Indításkor
+    playFullscreenVideo();
+
+    // Ha elfordítják a kijelzőt, váltson videót
+    window.addEventListener("orientationchange", playFullscreenVideo);
+    window.addEventListener("resize", playFullscreenVideo);
+  </script>
+</body>
+</html>
